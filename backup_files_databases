@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Data w formacie YYYY-MM i YYYY-MM-DD_HH-MM-SS
+YEAR_MONTH=$(date +%Y-%m)
+TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+
+# 1. Backup bazy glpi
+GLPI_DB_DIR="/mnt/backup/glpi_database/$YEAR_MONTH"
+mkdir -p "$GLPI_DB_DIR"
+mysqldump -u root --password='{Tu_wpisz_Twoje_haslo}' -glpi | gzip > "$GLPI_DB_DIR/${TIMESTAMP}-glpi.sql.gz"
+
+# 2. Backup wszystkich baz danych
+ALL_DB_DIR="/mnt/backup/databases/$YEAR_MONTH"
+mkdir -p "$ALL_DB_DIR"
+mysqldump -u root --password='{Tu_wpisz_Twoje_haslo}' --all-databases | gzip > "$ALL_DB_DIR/${TIMESTAMP}-all-databases.sql.gz"
+
+# 3. Backup plików www-glpi
+GLPI_FILES_DIR="/mnt/backup/glpi_files/$YEAR_MONTH"
+mkdir -p "$GLPI_FILES_DIR"
+tar czvf "$GLPI_FILES_DIR/${TIMESTAMP}-www-glpi.tar.gz" /var/www/glpi/
+
+# 4. Backup katalogu /etc
+ETC_DIR="/mnt/backup/etc/$YEAR_MONTH"
+mkdir -p "$ETC_DIR"
+tar czvf "$ETC_DIR/${TIMESTAMP}-etc.tar.gz" /etc/
