@@ -1,3 +1,5 @@
+#!/bin/bash
+
 for f in *; do
     # Usunięcie znaków #, ", (, ), |
     newname=$(echo "$f" | tr -d '#"()|')
